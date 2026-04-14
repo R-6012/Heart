@@ -1,0 +1,208 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #0d0106;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    /* 解决手机端多余滑动 */
+    overscroll-behavior: none;
+}
+
+.background-animation {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, rgba(85, 10, 40, 0.4) 0%, rgba(0, 0, 0, 1) 50%);
+    animation: pulse 10s ease-in-out infinite alternate;
+    z-index: 0;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.1); opacity: 1; }
+}
+
+#heart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* 组成爱心的小窗口 */
+.heart-popup {
+    position: absolute;
+    width: 130px;
+    background: rgba(25, 5, 15, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 150, 200, 0.35);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5), 0 0 8px rgba(255, 50, 100, 0.2);
+    transform: translate(-50%, -50%) scale(0);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    display: flex;
+    flex-direction: column;
+}
+
+.heart-popup .header {
+    height: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 4px;
+}
+
+.heart-popup .header .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+}
+.heart-popup .header .dot.red { background: #ff5f56; }
+.heart-popup .header .dot.yellow { background: #ffbd2e; }
+.heart-popup .header .dot.green { background: #27c93f; }
+
+.heart-popup .header .title {
+    margin-left: 6px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.75);
+}
+
+.heart-popup .body {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    font-size: 15px; /* Larger text for heart popup */
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    pointer-events: none;
+}
+
+/* 手机端缩小爱心里的弹窗 */
+@media (max-width: 600px) {
+    .heart-popup {
+        width: 80px;
+        border-radius: 6px;
+    }
+    .heart-popup .body {
+        font-size: 11px; /* Scaled down for mobile */
+        padding: 4px;
+    }
+    .heart-popup .header {
+        height: 12px;
+        padding: 0 4px;
+        gap: 3px;
+    }
+    .heart-popup .header .dot {
+        width: 4px; height: 4px;
+    }
+}
+
+@keyframes popIn {
+    to { transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes floatAway {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -50px))) scale(0.5) rotate(var(--rot, 15deg)); opacity: 0; }
+}
+
+.heart-popup.disappear {
+    animation: floatAway 1.2s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
+
+/* 填满屏幕的大号信息弹窗 */
+.message-popup {
+    position: absolute;
+    /* width 和 height 会由 JS 动态计算以填满屏幕 */
+    display: flex;
+    flex-direction: column;
+    background: rgba(25, 5, 15, 0.75);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 150, 200, 0.35);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 50, 100, 0.2);
+    /* -50% 是为了让坐标中心点对齐 */
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    animation: windowPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    z-index: 10;
+    overflow: hidden; /* 防止圆角被内容遮挡 */
+}
+
+@keyframes windowPop {
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.popup-header {
+    height: 32px;
+    min-height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    cursor: grab;
+}
+.popup-header:active {
+    cursor: grabbing;
+}
+
+.dot-container { display: flex; gap: 6px; }
+.dot-container .dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-container .dot.red { background: #ff5f56; box-shadow: 0 0 6px #ff5f56; }
+.dot-container .dot.yellow { background: #ffbd2e; box-shadow: 0 0 6px #ffbd2e; }
+.dot-container .dot.green { background: #27c93f; box-shadow: 0 0 6px #27c93f; }
+
+.popup-title {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    margin-right: 48px; 
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.popup-body {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    font-size: 28px; /* Massive text for simple messages */
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
+}
+
+.popup-body p {
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .popup-body {
+        font-size: 20px;
+        padding: 10px;
+    }
+    .popup-header {
+        height: 28px;
+        min-height: 28px;
+    }
+    .dot-container .dot { width: 8px; height: 8px; }
+    .popup-title { font-size: 11px; margin-right: 38px;}
+}
